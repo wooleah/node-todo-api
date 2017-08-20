@@ -12,6 +12,7 @@ var {User} = require('./models/user');
 var {ObjectID} = require('mongodb');
 
 var app = express();
+const port = process.env.PORT || 3000;
 
 //configuring middleware(body-parser)
 app.use(bodyParser.json()); //return value is the function we need to give to express
@@ -66,8 +67,8 @@ app.get('/todos/:id', (req, res) => { //creates id var
 });
 
 
-app.listen(3000, () => {
-	console.log('Started on port 3000');
+app.listen(port, () => {
+	console.log(`Started on port ${port}`);
 });
 
 module.exports = {app}; //app: app->shortened ES6
