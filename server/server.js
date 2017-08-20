@@ -9,6 +9,7 @@ var bodyParser = require('body-parser');
 var {mongoose} = require('./db/mongoose');
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
+var {ObjectID} = require('mongodb');
 
 var app = express();
 
@@ -41,10 +42,33 @@ app.get('/todos', (req, res) => {
 	});
 });
 
+//GET /todos/id
+app.get('/todos/:id', (req, res) => { //creates id var
+	// req.params //it's an object
+	// res.send(req.params);
+	var id = req.params.id;
+
+	//valid id using invalid
+	 //404 -send back empty body
+	 if(!ObjectID.isValid(id)){
+	 	res.status(404).send();
+	 }else{
+	 	Todo.findById(id).then((todo) => {
+	 		if(!todo){
+	 			res.status(404).send();
+	 		}else{
+	 			res.send({todo});
+	 		}
+	 	}, (err) => {
+	 		res.status(400).send();
+	 	});
+	 }
+});
+
+
 app.listen(3000, () => {
 	console.log('Started on port 3000');
 });
-
 
 module.exports = {app}; //app: app->shortened ES6
 //or
