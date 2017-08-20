@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-var Todo = mongoose.model('Todo', {
+var Todo = mongoose.model('Todo', { //mongoose adds todos collection to db
 	text: {
 		type: String,
 		required: true,

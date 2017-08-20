@@ -30,6 +30,17 @@ app.post('/todos', (req, res) => {
 	});
 });
 
+//GET - list all todos
+app.get('/todos', (req, res) => {
+	Todo.find().then((todos) => {
+		res.send({todos}); //or {todos: todos}
+		//When you pass an array, you can't add anymore properties(status code or other data)
+		//therefore, pass an object to be more flexible
+	}, (err) => {
+		res.status(400).send(err);
+	});
+});
+
 app.listen(3000, () => {
 	console.log('Started on port 3000');
 });
