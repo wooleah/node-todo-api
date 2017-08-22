@@ -100,12 +100,12 @@ app.patch('/todos/:id', (req, res) => {
 		body.completedAt = null;
 	}
 
-	//id, update, option -> return query -> can user promise
+	//id, update(needs mongodb operator), option -> return query -> can use promise
 	Todo.findByIdAndUpdate(id, {$set: body}, {new: true}).then((todo) => {
 		if(!todo){
 			return res.status(400).send();
 		}
-		res.send({todo});
+		res.send({todo}); //and we can fetch this with res.body.todo.property
 	}).catch((err) => {
 		res.status(400).send(); 
 	});
