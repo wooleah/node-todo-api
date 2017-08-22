@@ -1,3 +1,5 @@
+require('./config/config'); //triggers config file
+
 const _ = require('lodash');
 var express = require('express');
 //body-parser lets us take json and send it to server
@@ -13,7 +15,7 @@ var {User} = require('./models/user');
 var {ObjectID} = require('mongodb');
 
 var app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 
 //configuring middleware(body-parser)
 app.use(bodyParser.json()); //return value is the function we need to give to express
