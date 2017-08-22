@@ -1,3 +1,4 @@
+const _ = require('lodash');
 var express = require('express');
 //body-parser lets us take json and send it to server
 //takes body and turns(parse) it into javascript object
@@ -66,6 +67,7 @@ app.get('/todos/:id', (req, res) => { //creates id var
 	 }
 });
 
+//DELETE /todos/:id
 app.delete('/todos/:id', (req, res) => {
 	var id = req.params.id;
 	if(!ObjectID.isValid(id)){
@@ -80,6 +82,34 @@ app.delete('/todos/:id', (req, res) => {
 		res.status(400).send();
 		// console.log(err);
 	});
+});
+
+//PATCH, HttpPatch
+app.patch('/todos/:id', (req, res) => {
+	var id = req.params.id;
+	var body = _.pick(req.body, ['text', 'completed']); //create an object
+
+	//_id validation
+	if(!ObjectID.isValid(id))
+		return res.status(404).send();
+
+	if(_.isBoolean(body.completed) && body.completed){
+		body.completedAt = new Date().getTime();
+	}else{ //if body.completed is not a boolean or it's not true
+		body.completed = false;
+		body.completedAt = null;
+	}
+
+	//id, update, option -> return query -> can user promise
+	Todo.findByIdAndUpdate(id, {$set: body}, {new: true}).then((todo) => {
+		if(!todo){
+			return res.status(400).send();
+		}
+		res.send({todo});
+	}).catch((err) => {
+		res.status(400).send(); 
+	});
+
 });
 
 app.listen(port, () => {
