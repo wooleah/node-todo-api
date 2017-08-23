@@ -63,6 +63,27 @@ UserSchema.methods.generateAuthToken = function(){
 	});
 };
 
+//you add model methods here
+UserSchema.statics.findByToken = function(token){
+	var User = this;
+	var decoded;
+
+	try{
+		var decoded = jwt.verify(token, 'aleah123') // -> throw error if anything goes wrong
+	}catch(e){
+		// return new Promise((resolve, reject) => {
+		// 	reject();
+		// });
+		return Promise.reject();
+	}
+	return User.findOne({
+		_id: decoded._id,
+		//to query a nested mongodb document, we need to wrap value in quotes
+		'tokens.token': token, //quotes are required when we have .(dot) in a value
+		'tokens.access': 'auth'
+	}); //returns promise -> can chain then call
+};
+
 var User = mongoose.model('User', UserSchema);
 
 module.exports = {User};

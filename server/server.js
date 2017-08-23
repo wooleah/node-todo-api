@@ -1,18 +1,19 @@
 require('./config/config'); //triggers config file
 
 const _ = require('lodash');
-var express = require('express');
+const express = require('express');
 //body-parser lets us take json and send it to server
 //takes body and turns(parse) it into javascript object
 //body-parser takes your json and convert it to an object + attaching it to req object
-var bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
+const {ObjectID} = require('mongodb');
 
 //calling mongoose property in an object(exported), using destructuring
 //if the var name and property name matches
 var {mongoose} = require('./db/mongoose');
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
-var {ObjectID} = require('mongodb');
+var {authenticate} = require('./middleware/authenticate');
 
 var app = express();
 const port = process.env.PORT;
@@ -135,6 +136,10 @@ app.post('/users', (req, res) => {
 	});
 	//3. things go well -> send
 	//4. things go poorly -> send error
+});
+
+app.get('/users/me', authenticate, (req, res) => {
+	res.send(req.user);
 });
 
 app.listen(port, () => {
