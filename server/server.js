@@ -114,6 +114,29 @@ app.patch('/todos/:id', (req, res) => {
 
 });
 
+//POST /users
+app.post('/users', (req, res) => {
+	//1. create new instance of the model
+	var body = _.pick(req.body, ['email', 'password']); //source obj, property to pick
+	var user = new User(body);
+
+	//model method
+	// User.findByToken();
+	//instance method(individual user)
+	// user.generateAuthToken();
+
+	//2. call save - save to the db
+	user.save().then(() => {
+		return user.generateAuthToken();
+	}).then((token) => {
+		res.header('x-auth', token).send(user); //x- means that you're using custom header
+	}).catch((err) => {
+		res.status(400).send(err);
+	});
+	//3. things go well -> send
+	//4. things go poorly -> send error
+});
+
 app.listen(port, () => {
 	console.log(`Started on port ${port}`);
 });
