@@ -53,7 +53,8 @@ UserSchema.methods.generateAuthToken = function(){
 	//this keyword stores individual docs
 	var user = this;
 	var access = 'auth';
-	var token = jwt.sign({_id: user._id.toHexString(), access}, 'aleah123').toString();
+	//sign method -> ({_id: string, access}, 'secret')
+	var token = jwt.sign({_id: user._id.toHexString(), access}, 'woojae0219').toString();
 
 	user.tokens.push({access, token});
 	//when generateAuthToken method is called in server.js
@@ -70,7 +71,7 @@ UserSchema.statics.findByToken = function(token){
 	var decoded;
 
 	try{
-		var decoded = jwt.verify(token, 'aleah123') // -> throw error if anything goes wrong
+		decoded = jwt.verify(token, 'woojae0219'); // -> throw error if anything goes wrong
 	}catch(e){
 		// return new Promise((resolve, reject) => {
 		// 	reject();
