@@ -7,6 +7,7 @@ const express = require('express');
 //body-parser takes your json and convert it to an object + attaching it to req object
 const bodyParser = require('body-parser');
 const {ObjectID} = require('mongodb');
+const bcrypt = require('bcryptjs');
 
 //calling mongoose property in an object(exported), using destructuring
 //if the var name and property name matches
@@ -141,6 +142,35 @@ app.post('/users', (req, res) => {
 app.get('/users/me', authenticate, (req, res) => {
 	res.send(req.user);
 });
+
+//POST /users/login {email, password}
+app.post('/users/login', (req, res) => {
+	var body = _.pick(req.body, ['email', 'password']);
+
+	User.findByCredentials(body.email, body.password).then((user) => {
+		return user.generateAuthToken().then((token) => {
+			res.header('x-auth', token).send(user);
+		});
+	}).catch((e) => {
+		res.status(400).send();
+	});
+
+	// var email = req.body.email;
+	// var password = req.body.password;
+
+	// User.findOne({email}).then((user) => {
+	// 	bcrypt.compare(password, user.password, (err,result) => {
+	// 		if(err){
+	// 			console.log(err);
+	// 		}
+	// 		if(result){
+	// 			var user = {email, password};
+	// 			res.send(user);
+	// 		}
+	// 	});	
+	// });
+});
+
 
 app.listen(port, () => {
 	console.log(`Started on port ${port}`);
